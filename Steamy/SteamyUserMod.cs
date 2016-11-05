@@ -1,6 +1,7 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
     using System.Collections.Generic;
+    using ColossalFramework;
     using ColossalFramework.Steamworks;
     using ICities;
     using Infrastructure;
@@ -22,13 +23,13 @@
 
         private readonly IConfigStore configStore;
 
-        private readonly ILogger logger;
+        private ILogger logger;
 
         public SteamyUserMod()
         {
             configStore = new ConfigStore(ModName);
 
-            logger = LogManager.Instance.GetOrCreateLogger("Steamy");
+            logger = SteamyLogger.Instance;
             logger.Info("SteamyUserMod");
         }
 
@@ -60,7 +61,20 @@
                 configStore.GetSetting<int>(SettingKeys.PopupPosition),
                 PositionChanged);
 
+            var debugging = uiHelper.AddGroup("Debugging");
+            debugging.AddCheckBox("Enable logging", configStore.GetSetting<bool>(SettingKeys.EnableLogging),
+                                  EnableLoggingChanged);
+
             logger.Info("OnSettingsUi");
+        }
+
+        private void EnableLoggingChanged(bool isLoggingEnabled)
+        {
+            ((SteamyLogger)SteamyLogger.Instance).LoggingEnabled = isLoggingEnabled;
+
+            configStore.SaveSetting(SettingKeys.EnableLogging, isLoggingEnabled);
+
+            logger.Info("Logging enabled {0}", isLoggingEnabled);
         }
 
         private void PositionChanged(int selectedIndex)

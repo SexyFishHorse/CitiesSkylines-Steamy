@@ -1,5 +1,6 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
+    using ColossalFramework;
     using ColossalFramework.Steamworks;
     using ICities;
     using SexyFishHorse.CitiesSkylines.Infrastructure.Configuration;
@@ -15,7 +16,7 @@
         {
             configStore = new ConfigStore("Steamy");
 
-            logger = LogManager.Instance.GetOrCreateLogger("Steamy");
+            logger = SteamyLogger.Instance;
             logger.Info("LoadingImplementation");
         }
 
