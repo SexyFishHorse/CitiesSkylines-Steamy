@@ -4,11 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SexyFishHorse.CitiesSkylines.Steamy")]
-[assembly: AssemblyDescription("Mod for handling how Steam integrates with Cities Skylines")]
+
+[assembly: AssemblyTitle("SexyFishHorse.CitiesSkylines.Infrastructure")]
+[assembly: AssemblyDescription("Infrastructure classes and code for Cities Skylines modding")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SexyFishHorse")]
-[assembly: AssemblyProduct("SexyFishHorse.CitiesSkylines.Steamy")]
+[assembly: AssemblyProduct("SexyFishHorse.CitiesSkylines.Infrastructure")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -16,10 +17,12 @@ using System.Runtime.InteropServices;
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
+
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("91ab45a6-2552-40a1-8b97-498578ac83e7")]
+
+[assembly: Guid("a5a13615-047f-4eaa-8379-4eddb2e6a982")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -31,5 +34,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
+
 [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
