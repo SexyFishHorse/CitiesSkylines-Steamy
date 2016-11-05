@@ -1,54 +1,107 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
-    using ColossalFramework;
-    using ColossalFramework.Steamworks;
+    using System;
+    using System.Diagnostics;
+    using ColossalFramework.Plugins;
     using ICities;
-    using SexyFishHorse.CitiesSkylines.Infrastructure.Configuration;
-    using SexyFishHorse.CitiesSkylines.Logger;
+    using Infrastructure.Configuration;
+    using JetBrains.Annotations;
+    using Logger;
 
+    [UsedImplicitly]
     public class LoadingImplementation : ILoadingExtension
     {
-        private readonly IConfigStore configStore;
-
         private readonly ILogger logger;
+
+        private readonly SteamController steamController;
 
         public LoadingImplementation()
         {
-            configStore = new ConfigStore("Steamy");
+            try
+            {
+                var configStore = new ConfigStore("Steamy");
 
-            logger = SteamyLogger.Instance;
-            logger.Info("LoadingImplementation");
+                logger = SteamyLogger.Instance;
+
+                steamController = new SteamController(configStore, logger);
+
+                logger.Info("LoadingImplementation");
+            }
+            catch (Exception ex)
+            {
+                if (logger == null)
+                {
+                    Debugger.Log(1, SteamyUserMod.ModName, ex.Message);
+                }
+                else
+                {
+                    logger.LogException(ex, PluginManager.MessageType.Error);
+                }
+
+                throw;
+            }
         }
 
         public void OnCreated(ILoading loading)
         {
-            logger.Info("On created");
-
-            if (configStore.HasSetting(SettingKeys.PopupPosition))
+            try
             {
-                Steam.SetOverlayNotificationPosition((NotificationPosition)configStore.GetSetting<int>(SettingKeys.PopupPosition));
+                logger.Info("On created");
+
+                steamController.UpdatePopupPosition();
+                steamController.UpdateAchievementsStatus();
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex, PluginManager.MessageType.Error);
+
+                throw;
             }
         }
 
         public void OnLevelLoaded(LoadMode mode)
         {
-            logger.Info("On level loaded");
-            if (configStore.HasSetting(SettingKeys.PopupPosition))
+            try
             {
-                var notificationPosition = (NotificationPosition)configStore.GetSetting<int>(SettingKeys.PopupPosition);
-                Steam.SetOverlayNotificationPosition(notificationPosition);
-                logger.Info("Changed popup position to {0}", notificationPosition);
+                logger.Info("On level loaded");
+
+                steamController.UpdatePopupPosition();
+                steamController.UpdateAchievementsStatus();
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex, PluginManager.MessageType.Error);
+
+                throw;
             }
         }
 
         public void OnLevelUnloading()
         {
-            logger.Info("On level unloading");
+            try
+            {
+                logger.Info("On level unloading");
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex, PluginManager.MessageType.Error);
+
+                throw;
+            }
         }
 
         public void OnReleased()
         {
-            logger.Info("On released");
+            try
+            {
+                logger.Info("On released");
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex, PluginManager.MessageType.Error);
+
+                throw;
+            }
         }
     }
 }

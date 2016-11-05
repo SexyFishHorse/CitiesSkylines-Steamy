@@ -1,7 +1,9 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
+    using System;
     using System.Collections.Generic;
-    using ColossalFramework;
+    using System.Diagnostics;
+    using ColossalFramework.Plugins;
     using ColossalFramework.Steamworks;
     using ICities;
     using Infrastructure;
@@ -25,12 +27,32 @@
 
         private ILogger logger;
 
+        private readonly SteamController steamController;
+
         public SteamyUserMod()
         {
-            configStore = new ConfigStore(ModName);
+            try
+            {
+                configStore = new ConfigStore(ModName);
+                logger = SteamyLogger.Instance;
 
-            logger = SteamyLogger.Instance;
-            logger.Info("SteamyUserMod");
+                steamController = new SteamController(configStore, logger);
+
+                logger.Info("SteamyUserMod");
+            }
+            catch (Exception ex)
+            {
+                if (logger == null)
+                {
+                    Debugger.Log(1, ModName, ex.Message);
+                }
+                else
+                {
+                    logger.LogException(ex, PluginManager.MessageType.Error);
+                }
+
+                throw;
+            }
         }
 
         public string Description
@@ -51,21 +73,42 @@
 
         public void OnSettingsUI(UIHelperBase uiHelperBase)
         {
-            var uiHelper = uiHelperBase.AsStronglyTyped();
+            try
+            {
+                var uiHelper = uiHelperBase.AsStronglyTyped();
 
-            var appearance = uiHelper.AddGroup("Appearance");
+                var appearance = uiHelper.AddGroup("Appearance");
 
-            appearance.AddDropDown(
-                "Popup position",
-                Positions.ToArray(),
-                configStore.GetSetting<int>(SettingKeys.PopupPosition),
-                PositionChanged);
+                appearance.AddDropDown(
+                    "Popup position",
+                    Positions.ToArray(),
+                    configStore.GetSetting<int>(SettingKeys.PopupPosition),
+                    PositionChanged);
 
-            var debugging = uiHelper.AddGroup("Debugging");
-            debugging.AddCheckBox("Enable logging", configStore.GetSetting<bool>(SettingKeys.EnableLogging),
-                                  EnableLoggingChanged);
+                var behaviour = uiHelper.AddGroup("Behaviour");
+                behaviour.AddCheckBox("Enable achievements", GetAchievementStatus(), AchievementStatusChanged);
 
-            logger.Info("OnSettingsUi");
+                var debugging = uiHelper.AddGroup("Debugging");
+                debugging.AddCheckBox("Enable logging", configStore.GetSetting<bool>(SettingKeys.EnableLogging),
+                                      EnableLoggingChanged);
+
+                logger.Info("OnSettingsUi");
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex, PluginManager.MessageType.Error);
+
+                throw;
+            }
+        }
+
+        private void AchievementStatusChanged(bool isEnabled)
+        {
+            configStore.SaveSetting(SettingKeys.EnableAchievements, isEnabled);
+
+            steamController.UpdateAchievementsStatus();
+
+            logger.Info("Achievement status enabled {0}", isEnabled);
         }
 
         private void EnableLoggingChanged(bool isLoggingEnabled)
@@ -77,6 +120,13 @@
             logger.Info("Logging enabled {0}", isLoggingEnabled);
         }
 
+        private bool GetAchievementStatus()
+        {
+            logger.Info("Get achievement status");
+
+            return configStore.GetSetting<bool>(SettingKeys.EnableAchievements);
+        }
+
         private void PositionChanged(int selectedIndex)
         {
             NotificationPosition position;
@@ -84,19 +134,26 @@
             {
                 case "top right":
                     position = NotificationPosition.TopRight;
+
                     break;
                 case "top left":
                     position = NotificationPosition.TopLeft;
+
                     break;
                 case "bottom left":
                     position = NotificationPosition.BottomLeft;
+
                     break;
                 default:
                     position = NotificationPosition.BottomRight;
+
                     break;
             }
 
             configStore.SaveSetting(SettingKeys.PopupPosition, (int)position);
+
+            steamController.UpdatePopupPosition();
+
             logger.Info("Position changed to {0}", position);
         }
     }
