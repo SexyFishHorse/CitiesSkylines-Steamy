@@ -22,18 +22,21 @@
         public void OnCreated(ILoading loading)
         {
             logger.Info("On created");
-            if (configStore.HasSetting(SteamyUserMod.SettingKeyPopupPosition))
+
+            if (configStore.HasSetting(SettingKeys.PopupPosition))
             {
-                Steam.SetOverlayNotificationPosition((NotificationPosition)configStore.GetSetting<int>(SteamyUserMod.SettingKeyPopupPosition));
+                Steam.SetOverlayNotificationPosition((NotificationPosition)configStore.GetSetting<int>(SettingKeys.PopupPosition));
             }
         }
 
         public void OnLevelLoaded(LoadMode mode)
         {
             logger.Info("On level loaded");
-            if (configStore.HasSetting(SteamyUserMod.SettingKeyPopupPosition))
+            if (configStore.HasSetting(SettingKeys.PopupPosition))
             {
-                Steam.SetOverlayNotificationPosition((NotificationPosition)configStore.GetSetting<int>(SteamyUserMod.SettingKeyPopupPosition));
+                var notificationPosition = (NotificationPosition)configStore.GetSetting<int>(SettingKeys.PopupPosition);
+                Steam.SetOverlayNotificationPosition(notificationPosition);
+                logger.Info("Changed popup position to {0}", notificationPosition);
             }
         }
 

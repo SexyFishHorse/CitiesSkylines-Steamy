@@ -10,7 +10,7 @@
 
     public class SteamyUserMod : IUserModWithOptionsPanel
     {
-        public const string SettingKeyPopupPosition = "PopupPosition";
+        public const string ModName = "Steamy";
 
         private static readonly List<string> Positions = new List<string>
         {
@@ -26,7 +26,7 @@
 
         public SteamyUserMod()
         {
-            configStore = new ConfigStore("Steamy");
+            configStore = new ConfigStore(ModName);
 
             logger = LogManager.Instance.GetOrCreateLogger("Steamy");
             logger.Info("SteamyUserMod");
@@ -44,7 +44,7 @@
         {
             get
             {
-                return "Steamy";
+                return ModName;
             }
         }
 
@@ -57,7 +57,7 @@
             appearance.AddDropDown(
                 "Popup position",
                 Positions.ToArray(),
-                configStore.GetSetting<int>(SettingKeyPopupPosition),
+                configStore.GetSetting<int>(SettingKeys.PopupPosition),
                 PositionChanged);
 
             logger.Info("OnSettingsUi");
@@ -82,8 +82,8 @@
                     break;
             }
 
-            configStore.SaveSetting(SettingKeyPopupPosition, (int)position);
-            logger.Info("PositionChanged");
+            configStore.SaveSetting(SettingKeys.PopupPosition, (int)position);
+            logger.Info("Position changed to {0}", position);
         }
     }
 }
