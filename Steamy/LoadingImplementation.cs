@@ -1,8 +1,6 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
     using System;
-    using System.Diagnostics;
-    using ColossalFramework.Plugins;
     using ICities;
     using Infrastructure.Configuration;
     using JetBrains.Annotations;
@@ -29,14 +27,7 @@
             }
             catch (Exception ex)
             {
-                if (logger == null)
-                {
-                    Debugger.Log(1, SteamyUserMod.ModName, ex.Message);
-                }
-                else
-                {
-                    logger.LogException(ex, PluginManager.MessageType.Error);
-                }
+                logger.LogException(ex);
 
                 throw;
             }
@@ -53,7 +44,7 @@
             }
             catch (Exception ex)
             {
-                logger.LogException(ex, PluginManager.MessageType.Error);
+                logger.LogException(ex);
 
                 throw;
             }
@@ -70,7 +61,7 @@
             }
             catch (Exception ex)
             {
-                logger.LogException(ex, PluginManager.MessageType.Error);
+                logger.LogException(ex);
 
                 throw;
             }
@@ -84,7 +75,7 @@
             }
             catch (Exception ex)
             {
-                logger.LogException(ex, PluginManager.MessageType.Error);
+                logger.LogException(ex);
 
                 throw;
             }
@@ -98,7 +89,7 @@
             }
             catch (Exception ex)
             {
-                logger.LogException(ex, PluginManager.MessageType.Error);
+                logger.LogException(ex);
 
                 throw;
             }

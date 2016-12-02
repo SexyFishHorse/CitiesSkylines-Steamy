@@ -3,31 +3,24 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using ColossalFramework.Plugins;
-    using ColossalFramework.Steamworks;
+    using ColossalFramework.PlatformServices;
     using ICities;
-    using Infrastructure;
-    using Infrastructure.Configuration;
-    using Infrastructure.UI;
-    using Logger;
+    using SexyFishHorse.CitiesSkylines.Infrastructure;
+    using SexyFishHorse.CitiesSkylines.Infrastructure.Configuration;
+    using SexyFishHorse.CitiesSkylines.Infrastructure.UI;
+    using SexyFishHorse.CitiesSkylines.Logger;
 
-    public class SteamyUserMod : IUserModWithOptionsPanel
+    public class SteamyUserMod : IUserModWithOptionsPanel<SteamyUserMod>, IUserMod
     {
         public const string ModName = "Steamy";
 
-        private static readonly List<string> Positions = new List<string>
-        {
-            "Top left",
-            "Top Right",
-            "Bottom left",
-            "Bottom Right"
-        };
+        private static readonly List<string> Positions = new List<string> { "Top left", "Top Right", "Bottom left", "Bottom Right" };
 
         private readonly IConfigStore configStore;
 
-        private ILogger logger;
-
         private readonly SteamController steamController;
+
+        private ILogger logger;
 
         public SteamyUserMod()
         {
@@ -48,7 +41,7 @@
                 }
                 else
                 {
-                    logger.LogException(ex, PluginManager.MessageType.Error);
+                    logger.LogException(ex);
                 }
 
                 throw;
@@ -89,14 +82,13 @@
                 behaviour.AddCheckBox("Enable achievements", GetAchievementStatus(), AchievementStatusChanged);
 
                 var debugging = uiHelper.AddGroup("Debugging");
-                debugging.AddCheckBox("Enable logging", configStore.GetSetting<bool>(SettingKeys.EnableLogging),
-                                      EnableLoggingChanged);
+                debugging.AddCheckBox("Enable logging", configStore.GetSetting<bool>(SettingKeys.EnableLogging), EnableLoggingChanged);
 
                 logger.Info("OnSettingsUi");
             }
             catch (Exception ex)
             {
-                logger.LogException(ex, PluginManager.MessageType.Error);
+                logger.LogException(ex);
 
                 throw;
             }

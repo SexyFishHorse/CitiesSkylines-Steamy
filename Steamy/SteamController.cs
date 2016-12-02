@@ -1,7 +1,7 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
     using ColossalFramework;
-    using ColossalFramework.Steamworks;
+    using ColossalFramework.PlatformServices;
     using Infrastructure.Configuration;
     using Logger;
 
@@ -41,7 +41,7 @@
             if (configStore.HasSetting(SettingKeys.PopupPosition))
             {
                 var notificationPosition = (NotificationPosition)configStore.GetSetting<int>(SettingKeys.PopupPosition);
-                Steam.SetOverlayNotificationPosition(notificationPosition);
+                PlatformService.SetOverlayNotificationPosition(notificationPosition);
                 logger.Info("Changed popup position to {0}", notificationPosition);
             }
         }

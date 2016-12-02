@@ -69,13 +69,13 @@
             }
         }
 
-        public void LogException(Exception exception, PluginManager.MessageType messageType)
+        public void LogException(Exception exception)
         {
             EnsureNotDisposed();
 
             if (LoggingEnabled)
             {
-                logger.LogException(exception, messageType);
+                logger.LogException(exception);
             }
         }
 
