@@ -1,90 +1,56 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
     using ColossalFramework.PlatformServices;
     using ICities;
-    using SexyFishHorse.CitiesSkylines.Infrastructure;
-    using SexyFishHorse.CitiesSkylines.Infrastructure.Configuration;
-    using SexyFishHorse.CitiesSkylines.Infrastructure.UI;
-    using SexyFishHorse.CitiesSkylines.Logger;
+    using Infrastructure;
+    using JetBrains.Annotations;
+    using Logger;
 
-    public class SteamyUserMod : IUserModWithOptionsPanel<SteamyUserMod>, IUserMod
+    [UsedImplicitly]
+    public class SteamyUserMod : UserModBase, ILoadingExtension
     {
         public const string ModName = "Steamy";
 
-        private static readonly List<string> Positions = new List<string> { "Top left", "Top Right", "Bottom left", "Bottom Right" };
-
-        private readonly IConfigStore configStore;
+        private readonly ILogger logger;
 
         private readonly SteamController steamController;
-
-        private ILogger logger;
 
         public SteamyUserMod()
         {
             try
             {
-                configStore = new ConfigStore(ModName);
                 logger = SteamyLogger.Instance;
+                steamController = new SteamController(logger);
 
-                steamController = new SteamController(configStore, logger);
+                OptionsPanelManager = new OptionsPanelManager(logger, steamController);
+
+                if (string.IsNullOrEmpty(ModConfig.Instance.GetSetting<string>(SettingKeys.PopupPosition)))
+                {
+                    ModConfig.Instance.SaveSetting(SettingKeys.PopupPosition, (int)NotificationPosition.BottomRight);
+                }
+
+                steamController.UpdateAchievementsStatus();
+                steamController.UpdatePopupPosition();
 
                 logger.Info("SteamyUserMod");
             }
             catch (Exception ex)
             {
-                if (logger == null)
-                {
-                    Debugger.Log(1, ModName, ex.Message);
-                }
-                else
-                {
-                    logger.LogException(ex);
-                }
+                logger.LogException(ex);
 
-                throw;
+                //throw; 
             }
-        }
+        } 
 
-        public string Description
-        {
-            get
-            {
-                return "Configure how Steam integrates with Cities Skylines";
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return ModName;
-            }
-        }
-
-        public void OnSettingsUI(UIHelperBase uiHelperBase)
+        public void OnCreated(ILoading loading)
         {
             try
             {
-                var uiHelper = uiHelperBase.AsStronglyTyped();
+                logger.Info("On created");
 
-                var appearance = uiHelper.AddGroup("Appearance");
-
-                appearance.AddDropDown(
-                    "Popup position",
-                    Positions.ToArray(),
-                    configStore.GetSetting<int>(SettingKeys.PopupPosition),
-                    PositionChanged);
-
-                var behaviour = uiHelper.AddGroup("Behaviour");
-                behaviour.AddCheckBox("Enable achievements", GetAchievementStatus(), AchievementStatusChanged);
-
-                var debugging = uiHelper.AddGroup("Debugging");
-                debugging.AddCheckBox("Enable logging", configStore.GetSetting<bool>(SettingKeys.EnableLogging), EnableLoggingChanged);
-
-                logger.Info("OnSettingsUi");
+                steamController.UpdatePopupPosition();
+                steamController.UpdateAchievementsStatus();
             }
             catch (Exception ex)
             {
@@ -94,59 +60,65 @@
             }
         }
 
-        private void AchievementStatusChanged(bool isEnabled)
+        public void OnLevelLoaded(LoadMode mode)
         {
-            configStore.SaveSetting(SettingKeys.EnableAchievements, isEnabled);
-
-            steamController.UpdateAchievementsStatus();
-
-            logger.Info("Achievement status enabled {0}", isEnabled);
-        }
-
-        private void EnableLoggingChanged(bool isLoggingEnabled)
-        {
-            ((SteamyLogger)SteamyLogger.Instance).LoggingEnabled = isLoggingEnabled;
-
-            configStore.SaveSetting(SettingKeys.EnableLogging, isLoggingEnabled);
-
-            logger.Info("Logging enabled {0}", isLoggingEnabled);
-        }
-
-        private bool GetAchievementStatus()
-        {
-            logger.Info("Get achievement status");
-
-            return configStore.GetSetting<bool>(SettingKeys.EnableAchievements);
-        }
-
-        private void PositionChanged(int selectedIndex)
-        {
-            NotificationPosition position;
-            switch (Positions[selectedIndex].ToLower())
+            try
             {
-                case "top right":
-                    position = NotificationPosition.TopRight;
+                logger.Info("On level loaded");
 
-                    break;
-                case "top left":
-                    position = NotificationPosition.TopLeft;
-
-                    break;
-                case "bottom left":
-                    position = NotificationPosition.BottomLeft;
-
-                    break;
-                default:
-                    position = NotificationPosition.BottomRight;
-
-                    break;
+                steamController.UpdatePopupPosition();
+                steamController.UpdateAchievementsStatus();
             }
+            catch (Exception ex)
+            {
+                logger.LogException(ex);
 
-            configStore.SaveSetting(SettingKeys.PopupPosition, (int)position);
+                throw;
+            }
+        }
 
-            steamController.UpdatePopupPosition();
+        public void OnLevelUnloading()
+        {
+            try
+            {
+                logger.Info("On level unloading");
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex);
 
-            logger.Info("Position changed to {0}", position);
+                throw;
+            }
+        }
+
+        public void OnReleased()
+        {
+            try
+            {
+                logger.Info("On released");
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex);
+
+                throw;
+            }
+        }
+
+        public override string Description
+        {
+            get
+            {
+                return "Configure how Steam integrates with the game";
+            }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                return ModName;
+            }
         }
     }
 }

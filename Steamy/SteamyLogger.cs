@@ -2,7 +2,6 @@
 {
     using System;
     using ColossalFramework.Plugins;
-    using Infrastructure.Configuration;
     using Logger;
 
     public class SteamyLogger : ILogger
@@ -15,9 +14,7 @@
 
         private SteamyLogger()
         {
-            var configStore = new ConfigStore(SteamyUserMod.ModName);
-
-            LoggingEnabled = configStore.GetSetting<bool>(SettingKeys.EnableLogging);
+            LoggingEnabled = ModConfig.Instance.GetSetting<bool>(SettingKeys.EnableLogging);
 
             logger = LogManager.Instance.GetOrCreateLogger(SteamyUserMod.ModName);
         }
