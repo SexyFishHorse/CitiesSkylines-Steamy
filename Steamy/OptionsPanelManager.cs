@@ -9,7 +9,7 @@
 
     public class OptionsPanelManager : IOptionsPanelManager
     {
-        private static readonly List<string> Positions = new List<string> { "Top left", "Top right", "Bottom left", "Bottom right" };
+        private static readonly List<string> Positions = new List<string> { "Bottom right", "Bottom left", "Top right", "Top left", };
 
         private readonly ILogger logger;
 
