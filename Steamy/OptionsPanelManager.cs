@@ -51,50 +51,77 @@
 
         private void AchievementStatusChanged(bool isEnabled)
         {
-            ModConfig.Instance.SaveSetting(SettingKeys.EnableAchievements, isEnabled);
+            try
+            {
+                ModConfig.Instance.SaveSetting(SettingKeys.EnableAchievements, isEnabled);
 
-            steamController.UpdateAchievementsStatus();
+                steamController.UpdateAchievementsStatus();
 
-            logger.Info("Achievement status enabled {0}", isEnabled);
+                logger.Info("Achievement status enabled {0}", isEnabled);
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex);
+
+                throw;
+            }
         }
 
         private void EnableLoggingChanged(bool isLoggingEnabled)
         {
-            ((SteamyLogger)SteamyLogger.Instance).LoggingEnabled = isLoggingEnabled;
+            try
+            {
+                ((SteamyLogger)SteamyLogger.Instance).LoggingEnabled = isLoggingEnabled;
 
-            ModConfig.Instance.SaveSetting(SettingKeys.EnableLogging, isLoggingEnabled);
+                ModConfig.Instance.SaveSetting(SettingKeys.EnableLogging, isLoggingEnabled);
 
-            logger.Info("Logging enabled {0}", isLoggingEnabled);
+                logger.Info("Logging enabled {0}", isLoggingEnabled);
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex);
+
+                throw;
+            }
         }
 
         private void PositionChanged(int selectedIndex)
         {
-            NotificationPosition position;
-            switch (Positions[selectedIndex].ToLower())
+            try
             {
-                case "top right":
-                    position = NotificationPosition.TopRight;
+                NotificationPosition position;
+                switch (Positions[selectedIndex].ToLower())
+                {
+                    case "top right":
+                        position = NotificationPosition.TopRight;
 
-                    break;
-                case "top left":
-                    position = NotificationPosition.TopLeft;
+                        break;
+                    case "top left":
+                        position = NotificationPosition.TopLeft;
 
-                    break;
-                case "bottom left":
-                    position = NotificationPosition.BottomLeft;
+                        break;
+                    case "bottom left":
+                        position = NotificationPosition.BottomLeft;
 
-                    break;
-                default:
-                    position = NotificationPosition.BottomRight;
+                        break;
+                    default:
+                        position = NotificationPosition.BottomRight;
 
-                    break;
+                        break;
+                }
+
+                ModConfig.Instance.SaveSetting(SettingKeys.PopupPosition, (int)position);
+
+                steamController.UpdatePopupPosition();
+
+                logger.Info("Position changed to {0}", position);
             }
+            catch (Exception ex)
+            {
+                logger.LogException(ex);
 
-            ModConfig.Instance.SaveSetting(SettingKeys.PopupPosition, (int)position);
-
-            steamController.UpdatePopupPosition();
-
-            logger.Info("Position changed to {0}", position);
+                throw;
+            }
         }
     }
 }

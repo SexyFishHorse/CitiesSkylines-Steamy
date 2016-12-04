@@ -1,7 +1,6 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
     using System;
-    using ColossalFramework.PlatformServices;
     using ICities;
     using Infrastructure;
     using JetBrains.Annotations;
@@ -25,11 +24,6 @@
 
                 OptionsPanelManager = new OptionsPanelManager(logger, steamController);
 
-                if (string.IsNullOrEmpty(ModConfig.Instance.GetSetting<string>(SettingKeys.PopupPosition)))
-                {
-                    ModConfig.Instance.SaveSetting(SettingKeys.PopupPosition, (int)NotificationPosition.BottomRight);
-                }
-
                 steamController.UpdateAchievementsStatus();
                 steamController.UpdatePopupPosition();
 
@@ -39,9 +33,9 @@
             {
                 logger.LogException(ex);
 
-                //throw; 
+                throw;
             }
-        } 
+        }
 
         public void OnCreated(ILoading loading)
         {
