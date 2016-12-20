@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using ColossalFramework.PlatformServices;
-    using Infrastructure.Configuration;
     using Infrastructure.UI;
+    using Infrastructure.UI.Configuration;
     using Logger;
 
     public class OptionsPanelManager : IOptionsPanelManager
