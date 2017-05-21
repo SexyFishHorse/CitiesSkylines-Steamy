@@ -64,6 +64,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\PlatformServiceAdapter.cs" />
+    <Compile Include="Adapters\SimulationManagerAdapter.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="OptionsPanelManager.cs" />
     <Compile Include="SteamController.cs" />

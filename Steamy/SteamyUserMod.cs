@@ -5,6 +5,7 @@
     using JetBrains.Annotations;
     using SexyFishHorse.CitiesSkylines.Infrastructure;
     using SexyFishHorse.CitiesSkylines.Logger;
+    using SexyFishHorse.CitiesSkylines.Steamy.Adapters;
 
     [UsedImplicitly]
     public class SteamyUserMod : UserModBase, ILoadingExtension
@@ -20,7 +21,7 @@
             try
             {
                 logger = SteamyLogger.Instance;
-                steamController = new SteamController(logger);
+                steamController = new SteamController(new PlatformServiceAdapter(logger), new SimulationManagerAdapter(logger));
 
                 OptionsPanelManager = new OptionsPanelManager(logger, steamController);
 
