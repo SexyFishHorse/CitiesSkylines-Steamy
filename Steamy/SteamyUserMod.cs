@@ -2,9 +2,9 @@
 {
     using System;
     using ICities;
-    using Infrastructure;
     using JetBrains.Annotations;
-    using Logger;
+    using SexyFishHorse.CitiesSkylines.Infrastructure;
+    using SexyFishHorse.CitiesSkylines.Logger;
 
     [UsedImplicitly]
     public class SteamyUserMod : UserModBase, ILoadingExtension
@@ -34,6 +34,22 @@
                 logger.LogException(ex);
 
                 throw;
+            }
+        }
+
+        public override string Description
+        {
+            get
+            {
+                return "Configure how Steam integrates with the game";
+            }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                return ModName;
             }
         }
 
@@ -96,22 +112,6 @@
                 logger.LogException(ex);
 
                 throw;
-            }
-        }
-
-        public override string Description
-        {
-            get
-            {
-                return "Configure how Steam integrates with the game";
-            }
-        }
-
-        public override string Name
-        {
-            get
-            {
-                return ModName;
             }
         }
     }
