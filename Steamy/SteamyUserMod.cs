@@ -1,6 +1,7 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
     using System;
+    using Adapters;
     using ICities;
     using Infrastructure;
     using JetBrains.Annotations;
@@ -13,15 +14,15 @@
 
         private readonly ILogger logger;
 
-        private readonly SteamController steamController;
+        private readonly ISteamController steamController;
 
-        public SteamyUserMod()
+        public SteamyUserMod(ILogger logger, ISteamController steamController)
         {
+            this.logger = logger;
+            this.steamController = steamController;
+
             try
             {
-                logger = SteamyLogger.Instance;
-                steamController = new SteamController(logger);
-
                 OptionsPanelManager = new OptionsPanelManager(logger, steamController);
 
                 steamController.UpdateAchievementsStatus();
@@ -34,6 +35,28 @@
                 logger.LogException(ex);
 
                 throw;
+            }
+        }
+
+        public SteamyUserMod() : this(
+            SteamyLogger.Instance,
+            new SteamController(new PlatformServiceAdapter(SteamyLogger.Instance), new SimulationManagerAdapter(SteamyLogger.Instance)))
+        {
+        }
+
+        public override string Description
+        {
+            get
+            {
+                return "Configure how Steam integrates with the game";
+            }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                return ModName;
             }
         }
 
@@ -96,22 +119,6 @@
                 logger.LogException(ex);
 
                 throw;
-            }
-        }
-
-        public override string Description
-        {
-            get
-            {
-                return "Configure how Steam integrates with the game";
-            }
-        }
-
-        public override string Name
-        {
-            get
-            {
-                return ModName;
             }
         }
     }

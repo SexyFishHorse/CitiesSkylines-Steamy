@@ -1,39 +1,31 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
-    using ColossalFramework;
-    using ColossalFramework.PlatformServices;
-    using Logger;
+    using Adapters;
 
-    public class SteamController
+    public class SteamController : ISteamController
     {
-        private readonly ILogger logger;
+        private readonly IPlatformServiceAdapter platformService;
 
-        public SteamController(ILogger logger)
+        private readonly ISimulationManagerAdapter simulationManager;
+
+        public SteamController(IPlatformServiceAdapter platformService, ISimulationManagerAdapter simulationManager)
         {
-            this.logger = logger;
+            this.platformService = platformService;
+            this.simulationManager = simulationManager;
         }
 
         public void UpdateAchievementsStatus()
         {
-            var disableAchievements = ModConfig.Instance.GetSetting<bool>(SettingKeys.EnableAchievements)
-                                          ? SimulationMetaData.MetaBool.False
-                                          : SimulationMetaData.MetaBool.True;
-            if (Singleton<SimulationManager>.exists && (Singleton<SimulationManager>.instance.m_metaData != null))
-            {
-                Singleton<SimulationManager>.instance.m_metaData.m_disableAchievements = disableAchievements;
-                logger.Info("Changed achievements disabled to {0}", disableAchievements);
-            }
-            else
-            {
-                logger.Warn("Simulation manager or metadata not available (This warning can be safely ignored if you're in the main menu)");
-            }
+            var enableAchievements = ModConfig.Instance.GetSetting<bool>(SettingKeys.EnableAchievements);
+
+            simulationManager.SetAchievementsEnabled(enableAchievements);
         }
 
         public void UpdatePopupPosition()
         {
-            var notificationPosition = (NotificationPosition)ModConfig.Instance.GetSetting<int>(SettingKeys.PopupPosition);
-            PlatformService.SetOverlayNotificationPosition(notificationPosition);
-            logger.Info("Changed popup position to {0}", notificationPosition);
+            var popupPosition = ModConfig.Instance.GetSetting<int>(SettingKeys.PopupPosition);
+
+            platformService.SetPopupPosition(popupPosition);
         }
     }
 }
