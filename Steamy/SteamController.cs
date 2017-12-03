@@ -1,14 +1,14 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
-    using SexyFishHorse.CitiesSkylines.Steamy.Adapters;
+    using Adapters;
 
-    public class SteamController
+    public class SteamController : ISteamController
     {
-        private readonly PlatformServiceAdapter platformService;
+        private readonly IPlatformServiceAdapter platformService;
 
-        private readonly SimulationManagerAdapter simulationManager;
+        private readonly ISimulationManagerAdapter simulationManager;
 
-        public SteamController(PlatformServiceAdapter platformService, SimulationManagerAdapter simulationManager)
+        public SteamController(IPlatformServiceAdapter platformService, ISimulationManagerAdapter simulationManager)
         {
             this.platformService = platformService;
             this.simulationManager = simulationManager;

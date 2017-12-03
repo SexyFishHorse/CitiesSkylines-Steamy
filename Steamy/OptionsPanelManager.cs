@@ -13,9 +13,9 @@
 
         private readonly ILogger logger;
 
-        private readonly SteamController steamController;
+        private readonly ISteamController steamController;
 
-        public OptionsPanelManager(ILogger logger, SteamController steamController)
+        public OptionsPanelManager(ILogger logger, ISteamController steamController)
         {
             this.logger = logger;
             this.steamController = steamController;

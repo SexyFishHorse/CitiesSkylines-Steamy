@@ -3,7 +3,7 @@
     using ColossalFramework;
     using SexyFishHorse.CitiesSkylines.Logger;
 
-    public class SimulationManagerAdapter
+    public class SimulationManagerAdapter : ISimulationManagerAdapter
     {
         private readonly ILogger logger;
 

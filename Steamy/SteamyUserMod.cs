@@ -1,11 +1,11 @@
 ﻿namespace SexyFishHorse.CitiesSkylines.Steamy
 {
     using System;
+    using Adapters;
     using ICities;
+    using Infrastructure;
     using JetBrains.Annotations;
-    using SexyFishHorse.CitiesSkylines.Infrastructure;
-    using SexyFishHorse.CitiesSkylines.Logger;
-    using SexyFishHorse.CitiesSkylines.Steamy.Adapters;
+    using Logger;
 
     [UsedImplicitly]
     public class SteamyUserMod : UserModBase, ILoadingExtension
@@ -14,15 +14,15 @@
 
         private readonly ILogger logger;
 
-        private readonly SteamController steamController;
+        private readonly ISteamController steamController;
 
-        public SteamyUserMod()
+        public SteamyUserMod(ILogger logger, ISteamController steamController)
         {
+            this.logger = logger;
+            this.steamController = steamController;
+
             try
             {
-                logger = SteamyLogger.Instance;
-                steamController = new SteamController(new PlatformServiceAdapter(logger), new SimulationManagerAdapter(logger));
-
                 OptionsPanelManager = new OptionsPanelManager(logger, steamController);
 
                 steamController.UpdateAchievementsStatus();
@@ -36,6 +36,12 @@
 
                 throw;
             }
+        }
+
+        public SteamyUserMod() : this(
+            SteamyLogger.Instance,
+            new SteamController(new PlatformServiceAdapter(SteamyLogger.Instance), new SimulationManagerAdapter(SteamyLogger.Instance)))
+        {
         }
 
         public override string Description
