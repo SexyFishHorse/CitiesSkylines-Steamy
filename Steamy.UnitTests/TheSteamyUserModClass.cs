@@ -72,6 +72,7 @@
 
                 steamController.Verify(x => x.UpdateAchievementsStatus(), Times.Exactly(2)); // Constructor and OnCreated
             }
+
             [Fact]
             public void ShouldUpdatePopupPosition()
             {
