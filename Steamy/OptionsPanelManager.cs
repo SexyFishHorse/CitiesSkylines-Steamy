@@ -21,7 +21,7 @@
             this.steamController = steamController;
         }
 
-        public void ConfigureOptionsPanel(IStronglyTypedUiHelper uiHelper)
+        public void ConfigureOptionsPanel(IStronglyTypedUIHelper uiHelper)
         {
             try
             {

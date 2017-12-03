@@ -38,9 +38,10 @@
             }
         }
 
-        public SteamyUserMod() : this(
-            SteamyLogger.Instance,
-            new SteamController(new PlatformServiceAdapter(SteamyLogger.Instance), new SimulationManagerAdapter(SteamyLogger.Instance)))
+        public SteamyUserMod()
+            : this(
+                SteamyLogger.Instance,
+                new SteamController(new PlatformServiceAdapter(SteamyLogger.Instance), new SimulationManagerAdapter(SteamyLogger.Instance)))
         {
         }
 

@@ -3,11 +3,11 @@
     using System;
     using FluentAssertions;
     using ICities;
-    using Logger;
     using Moq;
     using Ploeh.AutoFixture;
     using Ploeh.AutoFixture.AutoMoq;
     using Ploeh.AutoFixture.Kernel;
+    using SexyFishHorse.CitiesSkylines.Logger;
     using Xunit;
 
     [Trait("Category", "UnitTest")]
@@ -15,34 +15,14 @@
     {
         private readonly IFixture fixture;
 
-        public TheSteamyUserModClass()
+        protected TheSteamyUserModClass()
         {
             fixture = new Fixture().Customize(new AutoMoqCustomization());
             fixture.Customize<SteamyUserMod>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
         }
-        
+
         public class TheConstructor : TheSteamyUserModClass
         {
-            [Fact]
-            public void ShouldUpdateAchievementStatus()
-            {
-                var steamController = fixture.Freeze<Mock<ISteamController>>();
-
-                fixture.Create<SteamyUserMod>();
-
-                steamController.Verify(x => x.UpdateAchievementsStatus(), Times.Once);
-            }
-            
-            [Fact]
-            public void ShouldUpdatePopupPosition()
-            {
-                var steamController = fixture.Freeze<Mock<ISteamController>>();
-
-                fixture.Create<SteamyUserMod>();
-
-                steamController.Verify(x => x.UpdatePopupPosition(), Times.Once);
-            }
-
             [Fact]
             public void ShouldLogExceptionAndRethrow()
             {
@@ -56,6 +36,26 @@
                 act.ShouldThrow<Exception>();
 
                 logger.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
+            }
+
+            [Fact]
+            public void ShouldUpdateAchievementStatus()
+            {
+                var steamController = fixture.Freeze<Mock<ISteamController>>();
+
+                fixture.Create<SteamyUserMod>();
+
+                steamController.Verify(x => x.UpdateAchievementsStatus(), Times.Once);
+            }
+
+            [Fact]
+            public void ShouldUpdatePopupPosition()
+            {
+                var steamController = fixture.Freeze<Mock<ISteamController>>();
+
+                fixture.Create<SteamyUserMod>();
+
+                steamController.Verify(x => x.UpdatePopupPosition(), Times.Once);
             }
         }
 
@@ -72,6 +72,7 @@
 
                 steamController.Verify(x => x.UpdateAchievementsStatus(), Times.Exactly(2)); // Constructor and OnCreated
             }
+
             [Fact]
             public void ShouldUpdatePopupPosition()
             {
@@ -98,6 +99,7 @@
 
                 steamController.Verify(x => x.UpdateAchievementsStatus(), Times.Exactly(2)); // Constructor and OnCreated
             }
+
             [Fact]
             public void ShouldUpdatePopupPosition()
             {
