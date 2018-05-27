@@ -4,9 +4,9 @@
     using FluentAssertions;
     using ICities;
     using Moq;
-    using Ploeh.AutoFixture;
-    using Ploeh.AutoFixture.AutoMoq;
-    using Ploeh.AutoFixture.Kernel;
+    using AutoFixture;
+    using AutoFixture.AutoMoq;
+    using AutoFixture.Kernel;
     using SexyFishHorse.CitiesSkylines.Logger;
     using Xunit;
 
@@ -33,7 +33,7 @@
 
                 Action act = () => fixture.Create<SteamyUserMod>();
 
-                act.ShouldThrow<Exception>();
+                act.Should().Throw<Exception>();
 
                 logger.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
             }
